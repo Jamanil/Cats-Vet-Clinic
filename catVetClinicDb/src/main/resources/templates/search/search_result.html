@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Clients</title>
+    <title>Search result</title>
     <style>
         label {
             display: flow-root;
@@ -71,30 +71,15 @@
     </style>
 </head>
 <body>
-<form th:method="POST" th:action="@{/search/}">
-    <fieldset>
-        <legend>Search client</legend>
-        <label>Search by:
-            <select name="search_by">
-                <option value="name" selected>Name</option>
-                <option value="phone">Phone</option>
-                <option value="email">Email</option>
-            </select>
-            <input type="text" name="substring_for_search" style="width: 65%; height: 28px">
-        </label>
-        <br>
-        <input type="submit" value="Search" style="width: 100%">
-    </fieldset>
-</form>
 
-<table>
+<table th:if="!${foundedClients.isEmpty()}">
     <tr>
         <th>Name</th>
         <th>Address</th>
         <th>Email</th>
         <th>Phone</th>
     </tr>
-    <tr th:each="client : ${clients}">
+    <tr th:each="client : ${foundedClients}">
             <td>
                 <a th:href="@{/client/{id}(id=${client.getId()})}" th:text="${client.getName()}">Full name</a>
             </td>
@@ -104,15 +89,10 @@
     </tr>
 </table>
 
-    <a th:if="${role =='ROLE_ADMIN'}" href="/admin">
-        <input type="button" value="Admin's page" style="width: 30%" >
-    </a>
-    <a href="/client/new">
-        <input type="button" value="Add client" style="width: 30%">
-    </a>
-    <form method="POST" th:action="@{/logout}">
-        <input type="submit" value="Logout" style="width: 30%">
-    </form>
+<h1 style="text-align: center; font-size: 30px; color: #086698" th:if="${foundedClients.isEmpty()}">Clients not found</h1>
 
+    <a href="/client/">
+        <input type="button" value="Back to client list" style="width: 30%">
+    </a>
 </body>
 </html>
