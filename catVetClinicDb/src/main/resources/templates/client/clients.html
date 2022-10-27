@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clients</title>
+    <style>
+        label {
+            display: flow-root;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 4px;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+        table {
+            width: 80%;
+            table-layout: fixed;
+        }
+        td {
+            border: 1px solid #666;
+            padding: 5px;
+            position: relative;
+            color: #1c87c9;
+            background: #cce6ff;
+        }
+        td a {
+            position: absolute;
+            left: 0; right: 0;
+            top: 0; bottom: 0;
+            background: #cce6ff;
+            color: #086698;
+            font-weight: bolder;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Email</th>
+        <th>Phone</th>
+    </tr>
+    <tr th:each="client : ${clients}">
+            <td>
+                <a th:href="@{/client/{id}(id=${client.getId()})}" th:text="${client.getName()}">Full name</a>
+            </td>
+            <td th:text="${client.getAddress()}">Address</td>
+            <td th:text="${client.getEmail()}">Email</td>
+            <td th:text="${client.getPhone()}">Phone</td>
+    </tr>
+</table>
+
+    <a th:if="${role =='ROLE_ADMIN'}" href="/admin">
+        <input type="button" value="Admin's page" style="width: 30%" >
+    </a>
+    <a href="/client/new">
+        <input type="button" value="Add client" style="width: 30%">
+    </a>
+    <form method="POST" th:action="@{/logout}">
+        <input type="submit" value="Logout" style="width: 30%">
+    </form>
+
+</body>
+</html>

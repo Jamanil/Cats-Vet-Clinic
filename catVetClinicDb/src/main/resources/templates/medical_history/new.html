@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New order</title>
+    <style>
+        label {
+            display: flow-root;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+        textarea {
+            width: 100%;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+<form th:method="POST" th:action="@{/medical_history/}" th:object="${medical_history}">
+    <fieldset>
+        <legend>Medical history order</legend>
+        <input type="text" th:field="*{catId}" th:value="${catId}" hidden>
+
+        <label for="symptoms">Symptoms: </label>
+        <textarea th:field="*{symptoms}" id="symptoms"></textarea>
+        <div style="color: red" th:if="${#fields.hasErrors('symptoms')}" th:errors="*{symptoms}">Incorrect diagnosis</div>
+        <br/>
+
+        <label for="diagnosis">Diagnosis: </label>
+        <textarea th:field="*{diagnosis}" id="diagnosis"></textarea>
+        <div style="color: red" th:if="${#fields.hasErrors('diagnosis')}" th:errors="*{diagnosis}">Incorrect diagnosis</div>
+        <br/>
+
+        <label for="therapy">Therapy: </label>
+        <textarea th:field="*{therapy}" id="therapy"></textarea>
+        <div style="color: red" th:if="${#fields.hasErrors('therapy')}" th:errors="*{therapy}">Incorrect therapy</div>
+        <br/>
+
+        <label for="outcome">Outcome: </label>
+        <textarea th:field="*{outcome}" id="outcome"></textarea>
+        <div style="color: red" th:if="${#fields.hasErrors('outcome')}" th:errors="*{outcome}">Incorrect outcome</div>
+        <br/>
+        <br/>
+
+        <input type="submit" value="Add order" style="width: 40%"/>
+        <a th:href="@{/client/cat/{id}(id=*{catId})}">
+            <input type="button" value="Back to cat" style="width: 40%">
+        </a>
+    </fieldset>
+</form>
+
+</body>
+</html>

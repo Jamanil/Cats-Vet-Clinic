@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Cat</title>
+    <style>
+        label {
+            display: inline;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+        p {
+            font-size: 18px;
+            font-weight: 70;
+            color: #1c87c9;
+        }
+        table {
+             width: 100%;
+             table-layout: fixed;
+         }
+        td {
+            border: 1px solid #666;
+            padding: 5px;
+            position: relative;
+            color: #1c87c9;
+            background: #cce6ff;
+        }
+        td a {
+            position: absolute;
+            left: 0; right: 0;
+            top: 0; bottom: 0;
+            background: #cce6ff;
+            color: #086698;
+            font-weight: bolder;
+            padding: 5px;
+        }
+        caption {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+    </style>
+</head>
+<body>
+<form th:method="GET" th:action="@{/cat/{id}/edit(id=${cat.getId()})}" th:object="${cat}">
+    <fieldset>
+        <legend>Cat information</legend>
+
+        <label>Name: </label>
+        <p th:text="*{name}"></p>
+
+        <label>Date of birth: </label>
+        <p th:text="*{dob.toString().substring(0, 10)}"></p>
+
+        <label>Color: </label>
+        <p th:text="*{color}"></p>
+
+        <label>Weight: </label>
+        <p th:text="*{weight}"></p>
+
+        <p th:if="${medical_history.isEmpty()}">
+            Cat does not have medical history orders yet
+        </p>
+
+        <table th:if="!${medical_history.isEmpty()}">
+            <caption style="alignment: center">Medical History</caption>
+            <tr>
+                <th style="width: 25%">Date</th>
+                <th>Diagnosis</th>
+            </tr>
+            <tr th:each="order : ${medical_history}">
+                <td>
+                    <a th:href="@{/medical_history/{id}(id=${order.getId()})}" th:text="${order.getDate().toString()}">
+                        Date
+                    </a>
+                </td>
+                <td th:text="${order.getDiagnosis()}">Diagnosis</td>
+            </tr>
+        </table>
+
+        <input type="submit" value="Edit cat information" style="width: 45%"/>
+
+        <a th:href="@{/client/{id}(id=${cat.getOwner().getId()})}">
+            <input type="button" value="Back to client" style="width: 45%">
+        </a>
+
+        <p></p>
+
+        <a th:href="@{/medical_history/new/{catId}(catId=${cat.getId()})}">
+            <input type="button" value="Add medical history order" style="width: 45%">
+        </a>
+    </fieldset>
+</form>
+</body>
+</html>

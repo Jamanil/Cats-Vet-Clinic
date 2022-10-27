@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <style>
+        label {
+            display: flow-root;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+    </style>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/auth/registration}" th:object="${staffDto}">
+    <fieldset>
+        <legend>Employee registration</legend>
+        <label for="name">Full name: </label>
+        <input type="text" th:field="*{name}" id="name">
+        <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Wrong name</div>
+        <br/>
+
+        <label for="dob">Date of birth: </label>
+        <input type="date" th:field="*{dob}" id="dob" placeholder="Date of birth">
+        <div style="color: red" th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}">Wrong DoB</div>
+        <br/>
+
+        <label for="post">Post: </label>
+        <input type="text" th:field="*{post}" id="post">
+        <div style="color: red" th:if="${#fields.hasErrors('post')}" th:errors="*{post}">Wrong post</div>
+        <br/>
+
+        <label for="username">Username: </label>
+        <input type="text" th:field="*{username}" id="username">
+        <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Wrong username</div>
+        <br/>
+
+        <label for="password">Password: </label>
+        <input type="password" th:field="*{password}" id="password">
+        <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect password</div>
+        <br/>
+
+        <label for="passwordConfirmation">Confirm password: </label>
+        <input type="password" th:field="*{passwordConfirmation}" id="passwordConfirmation">
+        <div style="color: red" th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}">Incorrect password</div>
+        <br/>
+        <br/>
+        <input type="submit" value="Registration"/>
+        <a href="/login">
+            <input type="button" value="Exit">
+        </a>
+    </fieldset>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Client</title>
+    <style>
+        label {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+        select {
+            width: 30%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        p {
+            font-size: 18px;
+            font-weight: 70;
+            color: #1c87c9;
+        }
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+        td {
+            border: 1px solid #666;
+            padding: 5px;
+            position: relative;
+            color: #1c87c9;
+            background: #cce6ff;
+        }
+        td a {
+            position: absolute;
+            left: 0; right: 0;
+            top: 0; bottom: 0;
+            background: #cce6ff;
+            color: #086698;
+            font-weight: bolder;
+            padding: 5px;
+        }
+        caption {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+    </style>
+</head>
+<body>
+<form th:object="${client}" th:method="GET" th:action="@{/client/{id}/edit(id=${client.getId()})}">
+    <fieldset>
+        <legend>Client information</legend>
+        <label style="display: inline">Name: </label>
+        <p th:text="*{name}"></p>
+
+        <label style="display: inline">Date of birth: </label>
+        <p th:text="*{dob.toString().substring(0, 10)}"></p>
+
+        <label style="display: inline">Phone: </label>
+        <p th:text="*{phone}"></p>
+
+        <label style="display: inline">Address: </label>
+        <p th:text="*{address}"></p>
+
+        <label style="display: inline">Email: </label>
+        <p th:text="*{email}"></p>
+        <p th:if="${cats.isEmpty()}">Client does not have cats yet</p>
+        <table th:if="!${cats.isEmpty()}">
+            <caption>Cats</caption>
+            <tr>
+                <th>Name</th>
+                <th>Date of Birth</th>
+                <th>Color</th>
+                <th>Weight</th>
+            </tr>
+            <tr th:each="cat : ${cats}">
+                <td>
+                    <a th:href="@{/cat/{id}(id=${cat.getId()})}" th:text="${cat.getName()}">
+                        Cat's name
+                    </a>
+                </td>
+                <td th:text="${cat.getDob().toString().substring(0, 10)}"></td>
+                <td th:text="${cat.getColor()}"></td>
+                <td th:text="${cat.getWeight()}"></td>
+            </tr>
+        </table>
+
+        <input type="submit" th:if="${role == 'ROLE_ADMIN'} OR ${role == 'ROLE_DOCTOR'}" value="Edit client information" style="width: 45%"/>
+        <a href="/client">
+            <input type="button" value="Back to client list" style="width: 45%"/>
+        </a>
+    </fieldset>
+</form>
+<form th:method="GET" th:action="@{/cat/new/{clientId}(clientId=${client.getId()})}">
+    <input type="submit" value="Add cat" style="width: 45%">
+</form>
+<br/>
+</body>
+</html>

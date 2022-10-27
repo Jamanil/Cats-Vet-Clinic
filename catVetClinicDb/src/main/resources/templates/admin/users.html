@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users list</title>
+    <style>
+        label {
+            display: flow-root;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+        table {
+            width: 80%;
+            table-layout: fixed;
+        }
+        td {
+            border: 1px solid #666;
+            padding: 5px;
+            position: relative;
+            color: #1c87c9;
+            background: #cce6ff;
+        }
+        td a {
+            position: absolute;
+            left: 0; right: 0;
+            top: 0; bottom: 0;
+            background: #cce6ff;
+            color: #086698;
+            font-weight: bolder;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Full name</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Is enabled</th>
+    </tr>
+    <tr th:each="user : ${staff}">
+            <td>
+                <a th:href="@{/admin/{id}(id=${user.getId()})}" th:text="${user.getName()}">Full name</a>
+            </td>
+            <td th:text="${user.getUsername()}">Username</td>
+            <td th:switch="${user.getRole()}">
+                <span th:case="'ROLE_ADMIN'">Admin</span>
+                <span th:case="'ROLE_DOCTOR'">Doctor</span>
+                <span th:case="'ROLE_NURSE'">Nurse</span>
+            </td>
+            <td th:text="${user.isEnabled()}">Is enabled</td>
+    </tr>
+</table>
+<a href="/client">
+    <input type="button" value="Back to clients list" style="width: 30%"/>
+</a>
+</body>
+</html>

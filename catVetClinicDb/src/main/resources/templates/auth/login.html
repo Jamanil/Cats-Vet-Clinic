@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login page</title>
+    <style>
+        label {
+            display: flow-root;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+    </style>
+</head>
+<body>
+
+<form name="f" method="post" action="/process_login">
+    <fieldset>
+        <legend>Login</legend>
+        <input type="hidden" th:name="${_csrf.getParameterName()}" th:value="${_csrf.getToken()}">
+
+        <label for="username">Username: </label>
+        <input type="text" name="username" id="username"/>
+        <br/>
+
+        <label for="password">Password: </label>
+        <input type="password" name="password" id="password"/>
+        <br/>
+
+        <div th:if="${error}" style="color: red; text-align:center; font-size: 20px">
+            Wrong username or password
+        </div>
+        <br/>
+        <input type="submit" value="Login" style="width: 45.5%"/>
+        <a href="/auth/registration">
+            <input type="button" value="Registration" style="width: 45.5%">
+        </a>
+    </fieldset>
+</form>
+</body>
+</html>

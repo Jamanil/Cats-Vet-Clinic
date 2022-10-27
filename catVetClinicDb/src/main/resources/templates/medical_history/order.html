@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order</title>
+    <style>
+        label {
+            display: flow-root;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+    </style>
+</head>
+<body>
+<form th:method="GET" th:action="@{/medical_history/{id}/edit(id=${medical_history.getId()})}" th:object="${medical_history}">
+    <fieldset>
+        <legend>Medical history order</legend>
+        <input type="text" th:field="*{catId}" th:value="${catId}" hidden>
+
+        <label>Symptoms: </label>
+        <p th:text="*{symptoms}"></p>
+
+        <label>Diagnosis: </label>
+        <p th:text="*{diagnosis}"></p>
+
+        <label>Therapy: </label>
+        <p th:text="*{therapy}"></p>
+
+        <label>Outcome: </label>
+        <p th:text="*{outcome}"></p>
+
+        <input type="submit" th:if="${role == 'ROLE_ADMIN'} OR ${role == 'ROLE_DOCTOR'}" value="Edit order" style="width: 40%"/>
+        <a th:href="@{/cat/{id}(id=*{catId})}">
+            <input type="button" value="Back to cat" style="width: 40%">
+        </a>
+    </fieldset>
+</form>
+</body>
+</html>

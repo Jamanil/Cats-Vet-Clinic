@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit user</title>
+    <style>
+        label {
+            display: flow-root;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        body {
+            padding: 20px;
+        }
+        input {
+            width: 90%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+        button {
+            appearance: none;
+            border: 0;
+            border-radius: 5px;
+            background: #4676D7;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        fieldset {
+            width: 80%;
+        }
+        legend {
+            font-size: 25px;
+            font-weight: 700;
+            color: #086698;
+        }
+        select {
+            width: 30%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<form  th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
+    <fieldset>
+        <legend>Edit user</legend>
+        <label for="name">Full name: </label>
+        <input type="text" th:field="*{name}" id="name">
+        <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Wrong name</div>
+        <br/>
+
+        <label for="dob">Date of birth: </label>
+        <input type="date" th:field="*{dob}" id="dob" placeholder="Date of birth">
+        <div style="color: red" th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}">Wrong DoB</div>
+        <br/>
+
+        <label for="post">Post: </label>
+        <input type="text" th:field="*{post}" id="post">
+        <div style="color: red" th:if="${#fields.hasErrors('post')}" th:errors="*{post}">Wrong post</div>
+        <br/>
+
+        <label for="username">Username: </label>
+        <input type="text" th:field="*{username}" id="username">
+        <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Wrong username</div>
+        <br/>
+
+        <label for="role">Role: </label>
+        <select id="role" th:field="*{role}">
+            <option th:value="ROLE_ADMIN" th:text="Admin">Admin</option>
+            <option th:value="ROLE_DOCTOR" th:text="Doctor">Doctor</option>
+            <option th:value="ROLE_NURSE" th:text="Nurse">Nurse</option>
+        </select>
+        <div style="color: red" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Incorrect role</div>
+        <br/>
+
+        <label for="enabled">Account status: </label>
+        <select id="enabled" th:field="*{enabled}">
+            <option th:value="true" th:text="Enabled">Enabled</option>
+            <option th:value="false" th:text="Disabled">Disabled</option>
+        </select>
+        <div style="color: red" th:if="${#fields.hasErrors('enabled')}" th:errors="*{enabled}">Wrong value</div>
+        <br/>
+        <br/>
+        <input type="submit" value="Edit" style="width: 45%"/>
+        <a href="/admin">
+            <input type="button" value="Exit" style="width: 45%"/>
+        </a>
+    </fieldset>
+</form>
+<p></p>
+<form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId()})}">
+    <input type="submit" value="Delete user" style="width: 40%">
+    <a href="/admin">
+        <input type="button" value="Back to staff list" style="width: 40%">
+    </a>
+</form>
+</body>
+</html>
