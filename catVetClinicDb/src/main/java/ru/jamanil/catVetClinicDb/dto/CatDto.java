@@ -16,11 +16,8 @@ import java.util.Date;
 @Getter
 @Setter
 public class CatDto {
-    private int id;
-
-    private int clientId;
-
-    @ToString.Exclude
+    private long id;
+    private long clientId;
     private Client owner;
 
     @NotEmpty(message = "Name shouldn't be empty")

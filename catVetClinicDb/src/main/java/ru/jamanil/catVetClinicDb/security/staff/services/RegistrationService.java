@@ -1,5 +1,6 @@
 package ru.jamanil.catVetClinicDb.security.staff.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,10 @@ import ru.jamanil.catVetClinicDb.security.staff.repositories.StaffRepository;
  * 24.10.2022
  */
 @Service
+@RequiredArgsConstructor
 public class RegistrationService {
     private final StaffRepository staffRepository;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public RegistrationService(StaffRepository staffRepository, PasswordEncoder passwordEncoder) {
-        this.staffRepository = staffRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Transactional
     public void register(Staff staff) {

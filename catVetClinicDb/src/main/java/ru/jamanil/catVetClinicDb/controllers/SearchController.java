@@ -1,6 +1,6 @@
 package ru.jamanil.catVetClinicDb.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,13 +21,9 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/search")
+@RequiredArgsConstructor
 public class SearchController {
     private final ClientSearchDao clientSearchDao;
-
-    @Autowired
-    public SearchController(ClientSearchDao clientSearchDao) {
-        this.clientSearchDao = clientSearchDao;
-    }
 
     @PostMapping
     private String search(@RequestParam("search_by") String searchBy,

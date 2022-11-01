@@ -1,7 +1,7 @@
 package ru.jamanil.catVetClinicDb.controllers;
 
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,19 +29,11 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/cat")
+@RequiredArgsConstructor
 public class CatController {
     private final CatService catService;
     private final ClientService clientService;
     private final MedicalHistoryService medicalHistoryService;
-
-    @Autowired
-    public CatController(CatService catService,
-                         ClientService clientService,
-                         MedicalHistoryService medicalHistoryService) {
-        this.catService = catService;
-        this.clientService = clientService;
-        this.medicalHistoryService = medicalHistoryService;
-    }
 
     @ModelAttribute("role")
     private String addRole() {
@@ -49,7 +41,7 @@ public class CatController {
     }
 
     @GetMapping("/{id}")
-    private String showCat(@PathVariable("id") int id, Model model) {
+    private String showCat(@PathVariable("id") long id, Model model) throws NotFoundException {
         Optional<Cat> catOptional = catService.findById(id);
         if (catOptional.isPresent()) {
             Cat cat = catOptional.get();
@@ -59,12 +51,14 @@ public class CatController {
                     .convertMedicalHistoryListToDto(medicalHistoryList);
             model.addAttribute("cat", catDto);
             model.addAttribute("medical_history", medicalHistoryDtoList);
+            return "cat/cat";
+        } else {
+            throw new NotFoundException("Cat not found by id");
         }
-        return "cat/cat";
     }
 
     @GetMapping("/new/{clientId}")
-    private String showCatAddForm(@PathVariable("clientId") int clientId, Model model){
+    private String showCatAddForm(@PathVariable("clientId") long clientId, Model model){
         CatDto catDto = new CatDto();
         catDto.setClientId(clientId);
         model.addAttribute("cat", catDto);
@@ -74,19 +68,18 @@ public class CatController {
     @PostMapping
     private String createCat(@ModelAttribute("cat") @Valid CatDto catDto,
                              BindingResult bindingResult) throws NotFoundException {
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return "cat/new";
-
-        fillOwnerByClientIdField(catDto);
-
-        Cat cat = CatToDtoConverter.convertDtoToCat(catDto);
-        catService.save(cat);
-
-        return "redirect:/client/" + catDto.getClientId();
+        } else {
+            fillOwnerByClientIdField(catDto);
+            Cat cat = CatToDtoConverter.convertDtoToCat(catDto);
+            catService.save(cat);
+            return "redirect:/client/" + catDto.getClientId();
+        }
     }
 
     @GetMapping("/{id}/edit")
-    private String showCatEditForm(@PathVariable("id") int id, Model model) {
+    private String showCatEditForm(@PathVariable("id") long id, Model model) {
         Optional<Cat> catOptional = catService.findById(id);
         catOptional.ifPresent(cat -> model.addAttribute("cat",
                 CatToDtoConverter.convertCatToDto(cat)));
@@ -94,30 +87,31 @@ public class CatController {
     }
 
     @PatchMapping("/{id}")
-    private String editCat(@PathVariable("id") int id,
+    private String editCat(@PathVariable("id") long id,
                            @ModelAttribute("cat") CatDto catDto,
                            BindingResult bindingResult) throws NotFoundException {
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return "cat/edit";
-        try{
-            fillOwnerByClientIdField(catDto);
-
-            Cat updatedCat = CatToDtoConverter.convertDtoToCat(catDto);
-            catService.update(updatedCat, id);
-            return "redirect:/client/" + updatedCat.getOwner().getId();
-        } catch (DataIntegrityViolationException e) {
-            bindingResult.rejectValue("name", "", e.getCause().getCause().getMessage());
-            return "cat/edit";
+        } else {
+            try {
+                fillOwnerByClientIdField(catDto);
+                Cat updatedCat = CatToDtoConverter.convertDtoToCat(catDto);
+                catService.update(updatedCat, id);
+                return "redirect:/client/" + updatedCat.getOwner().getId();
+            } catch (DataIntegrityViolationException e) {
+                bindingResult.rejectValue("name", "", e.getCause().getCause().getMessage());
+                return "cat/edit";
+            }
         }
     }
 
     @DeleteMapping("/{id}")
-    private String deleteCat(@PathVariable("id") int id) throws NotFoundException {
+    private String deleteCat(@PathVariable("id") long id) throws NotFoundException {
         Optional<Cat> optionalCat = catService.findById(id);
         if (optionalCat.isEmpty()) {
             throw new NotFoundException("Cat not found by id");
         } else {
-            int clientId = optionalCat.get().getOwner().getId();
+            long clientId = optionalCat.get().getOwner().getId();
             catService.delete(id);
             return "redirect:/client/" + clientId;
         }

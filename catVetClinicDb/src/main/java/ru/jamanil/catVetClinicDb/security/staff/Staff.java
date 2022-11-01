@@ -1,7 +1,7 @@
 package ru.jamanil.catVetClinicDb.security.staff;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author Victor Datsenko
@@ -25,7 +24,7 @@ public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Column(name = "name")
     @NotEmpty(message = "Name shouldn't be empty")
@@ -58,17 +57,4 @@ public class Staff {
 
     @Column(name = "enabled")
     private boolean enabled;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Staff staff = (Staff) o;
-        return Objects.equals(id, staff.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
 }

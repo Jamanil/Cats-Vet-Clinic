@@ -14,6 +14,6 @@ import java.util.List;
  */
 @Repository
 @RestResource(exported = false)
-public interface CatRepository extends JpaRepository<Cat, Integer> {
+public interface CatRepository extends JpaRepository<Cat, Long> {
     List<Cat> findAllByOwner(Client owner);
 }

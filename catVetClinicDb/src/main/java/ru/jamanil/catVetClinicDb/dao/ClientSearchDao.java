@@ -1,6 +1,6 @@
 package ru.jamanil.catVetClinicDb.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -13,18 +13,13 @@ import java.util.List;
  * 27.10.2022
  */
 @Component
+@RequiredArgsConstructor
 public class ClientSearchDao {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public ClientSearchDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     public List<Client> findBySubstring(String searchBy, String substringForSearching) {
-        String sql = "SELECT * FROM client WHERE " + searchBy + " ILIKE '%" + substringForSearching + "%'";
+        String sql =  String.format("SELECT * FROM client WHERE %s ILIKE %s%s%s", searchBy, "'%", substringForSearching, "%'");
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Client.class));
-
     }
 
 }

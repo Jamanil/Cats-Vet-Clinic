@@ -1,5 +1,7 @@
 package ru.jamanil.catVetClinicDb.controllers;
 
+import javassist.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,18 +26,11 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/client")
+@RequiredArgsConstructor
 public class ClientController {
     private final ClientService clientService;
     private final ClientDtoValidator clientDtoValidator;
     private final CatService catService;
-
-    public ClientController(ClientService clientService,
-                            ClientDtoValidator clientDtoValidator,
-                            CatService catService) {
-        this.clientService = clientService;
-        this.clientDtoValidator = clientDtoValidator;
-        this.catService = catService;
-    }
 
     @ModelAttribute("role")
     private String addRole() {
@@ -63,27 +58,30 @@ public class ClientController {
     private String createClient(@ModelAttribute("client") @Valid ClientDto clientDto,
                                 BindingResult bindingResult) {
         clientDtoValidator.validate(clientDto, bindingResult);
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return "client/new";
-
-        Client client = ClientToDtoConverter.convertDtoToClient(clientDto);
-        clientService.save(client);
-        return "redirect:/client";
+        } else {
+            Client client = ClientToDtoConverter.convertDtoToClient(clientDto);
+            clientService.save(client);
+            return "redirect:/client";
+        }
     }
 
     @GetMapping("/{id}")
-    private String showClient(@PathVariable("id") int id, Model model) {
+    private String showClient(@PathVariable("id") long id, Model model) throws NotFoundException {
         Optional<Client> clientOptional = clientService.findById(id);
         if (clientOptional.isPresent()) {
             Client client = clientOptional.get();
             model.addAttribute("client", ClientToDtoConverter.convertClientToDto(client));
             model.addAttribute("cats", catService.findAllByOwner(client));
+            return "client/client";
+        } else {
+            throw new NotFoundException("Client not found by id");
         }
-        return "client/client";
     }
 
     @GetMapping("/{id}/edit")
-    private String showClientEditForm(@PathVariable("id") int id, Model model) {
+    private String showClientEditForm(@PathVariable("id") long id, Model model) {
         Optional<Client> client = clientService.findById(id);
         client.ifPresent(value -> model.addAttribute("client",
                 ClientToDtoConverter.convertClientToDto(value)));
@@ -91,22 +89,24 @@ public class ClientController {
     }
 
     @PatchMapping("/{id}")
-    private String updateClient(@PathVariable("id") int id,
+    private String updateClient(@PathVariable("id") long id,
                                 @ModelAttribute("client") ClientDto clientDto,
                                 BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return  "client/edit";
-        try {
-            clientService.update(ClientToDtoConverter.convertDtoToClient(clientDto), id);
-            return "redirect:/client";
-        } catch (DataIntegrityViolationException e) {
-            bindingResult.rejectValue("name", "", e.getCause().getCause().getMessage());
-            return  "client/edit";
+        if (bindingResult.hasErrors()) {
+            return "client/edit";
+        } else {
+            try {
+                clientService.update(ClientToDtoConverter.convertDtoToClient(clientDto), id);
+                return "redirect:/client";
+            } catch (DataIntegrityViolationException e) {
+                bindingResult.rejectValue("name", "", e.getCause().getCause().getMessage());
+                return "client/edit";
+            }
         }
     }
 
     @DeleteMapping("/{id}")
-    private String deleteClient(@PathVariable("id") int id) {
+    private String deleteClient(@PathVariable("id") long id) {
         clientService.delete(id);
         return "redirect:/client";
     }

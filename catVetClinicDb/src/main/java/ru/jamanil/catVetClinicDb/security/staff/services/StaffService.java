@@ -1,5 +1,6 @@
 package ru.jamanil.catVetClinicDb.security.staff.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,15 +16,11 @@ import java.util.Optional;
  */
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class StaffService {
     private final StaffRepository staffRepository;
 
-    @Autowired
-    public StaffService(StaffRepository staffRepository) {
-        this.staffRepository = staffRepository;
-    }
-
-    public Optional<Staff> findById(int id) {
+    public Optional<Staff> findById(long id) {
         return staffRepository.findById(id);
     }
 
@@ -45,7 +42,7 @@ public class StaffService {
     }
 
     @Transactional
-    public void update(Staff updatedStaff, int id) {
+    public void update(Staff updatedStaff, long id) {
         Optional<Staff> staffFromDb = findById(id);
 
         if(staffFromDb.isPresent()) {
@@ -60,7 +57,7 @@ public class StaffService {
     }
 
     @Transactional
-    public void delete(int id) {
+    public void delete(long id) {
         staffRepository.deleteById(id);
     }
 }

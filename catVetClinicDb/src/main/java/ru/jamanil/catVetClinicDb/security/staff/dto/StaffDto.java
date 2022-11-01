@@ -17,7 +17,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class StaffDto {
-    private int id;
+    private long id;
 
     @NotEmpty(message = "Name shouldn't be empty")
     @Size(min = 5, max = 100, message = "Name should be between 5 and 100 characters")

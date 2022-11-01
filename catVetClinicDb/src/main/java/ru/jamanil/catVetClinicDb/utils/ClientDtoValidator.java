@@ -1,5 +1,6 @@
 package ru.jamanil.catVetClinicDb.utils;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -13,13 +14,9 @@ import ru.jamanil.catVetClinicDb.services.ClientService;
  */
 @SuppressWarnings("NullableProblems")
 @Component
+@RequiredArgsConstructor
 public class ClientDtoValidator implements Validator {
     private final ClientService clientService;
-
-    @Autowired
-    public ClientDtoValidator(ClientService clientService) {
-        this.clientService = clientService;
-    }
 
     @Override
     public boolean supports(Class<?> clazz) {

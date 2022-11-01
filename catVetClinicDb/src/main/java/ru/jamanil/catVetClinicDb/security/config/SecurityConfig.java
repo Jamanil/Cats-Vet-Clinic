@@ -19,7 +19,6 @@ import ru.jamanil.catVetClinicDb.security.staff.services.StaffDetailsService;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();

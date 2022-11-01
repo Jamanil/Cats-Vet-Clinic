@@ -1,6 +1,6 @@
 package ru.jamanil.catVetClinicDb.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,19 +19,15 @@ import java.util.Optional;
  */
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MedicalHistoryService {
     private final MedicalHistoryRepository medicalHistoryRepository;
-
-    @Autowired
-    public MedicalHistoryService(MedicalHistoryRepository medicalHistoryRepository) {
-        this.medicalHistoryRepository = medicalHistoryRepository;
-    }
 
     public List<MedicalHistory> findAllByCat(Cat cat) {
         return medicalHistoryRepository.findAllByCat(cat);
     }
 
-    public Optional<MedicalHistory> findById(int id) {
+    public Optional<MedicalHistory> findById(long id) {
         return medicalHistoryRepository.findById(id);
     }
 
@@ -48,7 +44,7 @@ public class MedicalHistoryService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
-    public void update(MedicalHistory updatedHistory, int id) {
+    public void update(MedicalHistory updatedHistory, long id) {
         Optional<MedicalHistory> optionalHistory = findById(id);
 
         if(optionalHistory.isPresent()) {
@@ -67,7 +63,7 @@ public class MedicalHistoryService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void delete(int id) {
+    public void delete(long id) {
         medicalHistoryRepository.deleteById(id);
     }
 }

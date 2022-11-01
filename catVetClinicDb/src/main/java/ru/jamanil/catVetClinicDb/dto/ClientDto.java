@@ -14,7 +14,9 @@ import java.util.Date;
 @Getter
 @Setter
 public class ClientDto {
-    private int id;
+    private long id;
+
+    private String address;
 
     @NotEmpty(message = "Name shouldn't be empty")
     @Size(min = 5, max = 100, message = "Name should be between 5 and 100 characters")
@@ -24,8 +26,6 @@ public class ClientDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @PastOrPresent(message = "Date of birth must be in the past")
     private Date dob;
-
-    private String address;
 
     @Email(message = "Incorrect email")
     private String email;

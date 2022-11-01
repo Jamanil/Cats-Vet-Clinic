@@ -1,7 +1,7 @@
 package ru.jamanil.catVetClinicDb.controllers;
 
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,16 +23,10 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/medical_history")
+@RequiredArgsConstructor
 public class MedicalHistoryController {
     private final MedicalHistoryService medicalHistoryService;
     private final CatService catService;
-
-    @Autowired
-    public MedicalHistoryController(MedicalHistoryService medicalHistoryService,
-                                    CatService catService) {
-        this.medicalHistoryService = medicalHistoryService;
-        this.catService = catService;
-    }
 
     @ModelAttribute("role")
     private String addRole() {
@@ -40,7 +34,7 @@ public class MedicalHistoryController {
     }
 
     @GetMapping("/{id}")
-    private String showMedicalHistoryOrder(@PathVariable("id") int id, Model model) {
+    private String showMedicalHistoryOrder(@PathVariable("id") long id, Model model) {
         Optional<MedicalHistory> medicalHistoryOptional = medicalHistoryService.findById(id);
         medicalHistoryOptional.ifPresent(medicalHistory -> model.addAttribute("medical_history",
                 MedicalHistoryToDtoConverter.convertMedicalHistoryToDto(medicalHistory)));
@@ -48,7 +42,7 @@ public class MedicalHistoryController {
     }
 
     @GetMapping("/new/{catId}")
-    private String showMedicalHistoryOrderAddForm(@PathVariable("catId") int catId, Model model) {
+    private String showMedicalHistoryOrderAddForm(@PathVariable("catId") long catId, Model model) {
         MedicalHistoryDto medicalHistoryDto = new MedicalHistoryDto();
         medicalHistoryDto.setCatId(catId);
         model.addAttribute("medical_history", medicalHistoryDto);
@@ -58,18 +52,18 @@ public class MedicalHistoryController {
     @PostMapping
     private String createMedicalHistoryOrder(@ModelAttribute("medical_history") MedicalHistoryDto medicalHistoryDto,
                                              BindingResult bindingResult) throws NotFoundException {
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return "medical_history/new";
-
-        fillCatByCatIdField(medicalHistoryDto);
-        MedicalHistory medicalHistory = MedicalHistoryToDtoConverter.convertDtoToMedicalHistory(medicalHistoryDto);
-        medicalHistoryService.save(medicalHistory);
-
-        return "redirect:/cat/" + medicalHistoryDto.getCatId();
+        } else {
+            fillCatByCatIdField(medicalHistoryDto);
+            MedicalHistory medicalHistory = MedicalHistoryToDtoConverter.convertDtoToMedicalHistory(medicalHistoryDto);
+            medicalHistoryService.save(medicalHistory);
+            return "redirect:/cat/" + medicalHistoryDto.getCatId();
+        }
     }
 
     @GetMapping("/{id}/edit")
-    private String showMedicalHistoryOrderEditForm(@PathVariable("id") int id, Model model) {
+    private String showMedicalHistoryOrderEditForm(@PathVariable("id") long id, Model model) {
         Optional<MedicalHistory> medicalHistoryOptional = medicalHistoryService.findById(id);
         medicalHistoryOptional.ifPresent(medicalHistory -> model.addAttribute("medical_history",
                 MedicalHistoryToDtoConverter.convertMedicalHistoryToDto(medicalHistory)));
@@ -77,30 +71,32 @@ public class MedicalHistoryController {
     }
 
     @PatchMapping("/{id}")
-    private String editMedicalHistoryOrder(@PathVariable("id") int id,
+    private String editMedicalHistoryOrder(@PathVariable("id") long id,
                                            @ModelAttribute("medical_history") MedicalHistoryDto medicalHistoryDto,
                                            BindingResult bindingResult) throws NotFoundException {
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return "medical_history/edit";
-        try {
-            fillCatByCatIdField(medicalHistoryDto);
-            MedicalHistory updatedMedicalHistory = MedicalHistoryToDtoConverter
-                    .convertDtoToMedicalHistory(medicalHistoryDto);
-            medicalHistoryService.update(updatedMedicalHistory, id);
-            return "redirect:/cat/" + medicalHistoryDto.getCatId();
-        } catch (DataIntegrityViolationException e) {
-            bindingResult.rejectValue("name", "", e.getCause().getCause().getMessage());
-            return "medical_history/edit";
+        } else {
+            try {
+                fillCatByCatIdField(medicalHistoryDto);
+                MedicalHistory updatedMedicalHistory = MedicalHistoryToDtoConverter
+                        .convertDtoToMedicalHistory(medicalHistoryDto);
+                medicalHistoryService.update(updatedMedicalHistory, id);
+                return "redirect:/cat/" + medicalHistoryDto.getCatId();
+            } catch (DataIntegrityViolationException e) {
+                bindingResult.rejectValue("name", "", e.getCause().getCause().getMessage());
+                return "medical_history/edit";
+            }
         }
     }
 
     @DeleteMapping("/{id}")
-    private String deleteMedicalHistoryOrder(@PathVariable("id") int id) throws NotFoundException {
+    private String deleteMedicalHistoryOrder(@PathVariable("id") long id) throws NotFoundException {
         Optional<MedicalHistory> optionalMedicalHistory = medicalHistoryService.findById(id);
         if (optionalMedicalHistory.isEmpty()) {
             throw new NotFoundException("Medical history order not founded by id");
         } else {
-            int catId = optionalMedicalHistory.get().getCat().getId();
+            long catId = optionalMedicalHistory.get().getCat().getId();
             medicalHistoryService.delete(id);
             return "redirect:/cat/" + catId;
         }

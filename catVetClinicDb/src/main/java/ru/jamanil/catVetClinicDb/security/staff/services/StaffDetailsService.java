@@ -1,5 +1,6 @@
 package ru.jamanil.catVetClinicDb.security.staff.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,13 +17,9 @@ import java.util.Optional;
  * 24.10.2022
  */
 @Service
+@RequiredArgsConstructor
 public class StaffDetailsService implements UserDetailsService {
     private final StaffRepository staffRepository;
-
-    @Autowired
-    public StaffDetailsService(StaffRepository staffRepository) {
-        this.staffRepository = staffRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

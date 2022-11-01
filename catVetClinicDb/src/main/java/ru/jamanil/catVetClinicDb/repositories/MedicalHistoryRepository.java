@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Repository()
 @RestResource(exported = false)
-public interface MedicalHistoryRepository extends JpaRepository<MedicalHistory, Integer> {
+public interface MedicalHistoryRepository extends JpaRepository<MedicalHistory, Long> {
     List<MedicalHistory> findAllByCat(Cat cat);
 }
 

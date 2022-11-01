@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 @Repository
 @RestResource(exported = false)
-public interface ClientRepository extends JpaRepository<Client, Integer> {
+public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByName(String name);
     Optional<Client> findByPhone(String phone);
     Optional<Client> findByEmail(String email);

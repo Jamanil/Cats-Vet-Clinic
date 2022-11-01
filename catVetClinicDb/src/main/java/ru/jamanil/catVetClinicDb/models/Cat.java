@@ -1,12 +1,15 @@
 package ru.jamanil.catVetClinicDb.models;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Victor Datsenko
@@ -20,7 +23,7 @@ public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "owner", referencedColumnName = "id")
@@ -79,18 +82,5 @@ public class Cat {
             this.medicalHistoryList = new ArrayList<>();
 
         medicalHistoryList.addAll(Arrays.asList(medicalHistories));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Cat cat = (Cat) o;
-        return Objects.equals(id, cat.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
     }
 }

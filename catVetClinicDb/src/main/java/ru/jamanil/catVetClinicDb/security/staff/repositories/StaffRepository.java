@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 @Repository
 @RestResource(exported = false)
-public interface StaffRepository extends JpaRepository<Staff, Integer> {
+public interface StaffRepository extends JpaRepository<Staff, Long> {
     Optional<Staff> findByName(String name);
     Optional<Staff> findByUsername(String username);
 }

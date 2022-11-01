@@ -1,6 +1,6 @@
 package ru.jamanil.catVetClinicDb.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,16 +22,10 @@ import javax.validation.Valid;
  */
 @Controller
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
     private final RegistrationService registrationService;
     private final StaffDtoValidator staffDtoValidator;
-
-    @Autowired
-    public AuthController(RegistrationService registrationService,
-                          StaffDtoValidator staffDtoValidator) {
-        this.registrationService = registrationService;
-        this.staffDtoValidator = staffDtoValidator;
-    }
 
     @GetMapping("/login")
     private String showLoginPage() {
@@ -50,12 +44,12 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             System.out.println(bindingResult.getAllErrors());
             return "auth/registration";
+        } else {
+            Staff staff = StaffToDtoConverter.convertDtoToStaff(staffDto);
+            System.out.println(staff);
+            registrationService.register(staff);
+            return "redirect:/auth/login";
         }
-
-        Staff staff = StaffToDtoConverter.convertDtoToStaff(staffDto);
-        System.out.println(staff);
-        registrationService.register(staff);
-        return "redirect:/auth/login";
     }
 
     @GetMapping("/failure_login")

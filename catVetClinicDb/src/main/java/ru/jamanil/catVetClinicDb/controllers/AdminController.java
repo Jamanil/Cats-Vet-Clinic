@@ -1,6 +1,6 @@
 package ru.jamanil.catVetClinicDb.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,13 +22,9 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminController {
     private final StaffService staffService;
-
-    @Autowired
-    public AdminController(StaffService staffService) {
-        this.staffService = staffService;
-    }
 
     @GetMapping
     private String showUsers(Model model) {
@@ -42,29 +38,31 @@ public class AdminController {
     }
 
     @GetMapping("/{id}")
-    private String showEditUserForm(@PathVariable("id") int id, Model model) {
+    private String showEditUserForm(@PathVariable("id") long id, Model model) {
         Optional<Staff> staff = staffService.findById(id);
         staff.ifPresent(value -> model.addAttribute("user", StaffToDtoConverter.convertStaffToDto(value)));
         return "/admin/user";
     }
 
     @PatchMapping("/{id}")
-    private String editUser(@PathVariable("id") int id,
+    private String editUser(@PathVariable("id") long id,
                             @ModelAttribute("user") @Valid StaffDto staffDto,
                             BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return "/admin/user";
-        try {
-            staffService.update(StaffToDtoConverter.convertDtoToStaff(staffDto), id);
-            return "redirect:/admin";
-        } catch (DataIntegrityViolationException e) {
-            bindingResult.rejectValue("name", "", e.getCause().getCause().getMessage());
-            return "/admin/user";
+        } else {
+            try {
+                staffService.update(StaffToDtoConverter.convertDtoToStaff(staffDto), id);
+                return "redirect:/admin";
+            } catch (DataIntegrityViolationException e) {
+                bindingResult.rejectValue("name", "", e.getCause().getCause().getMessage());
+                return "/admin/user";
+            }
         }
     }
 
     @DeleteMapping("/{id}")
-    private String deleteUser(@PathVariable("id") int id) {
+    private String deleteUser(@PathVariable("id") long id) {
         staffService.delete(id);
         return "redirect:/admin";
     }

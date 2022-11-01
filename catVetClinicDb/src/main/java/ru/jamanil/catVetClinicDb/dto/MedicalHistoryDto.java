@@ -16,10 +16,8 @@ import java.util.Date;
 @Getter
 @Setter
 public class MedicalHistoryDto {
-    private int id;
-
-    private int catId;
-
+    private long id;
+    private long catId;
     private Cat cat;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

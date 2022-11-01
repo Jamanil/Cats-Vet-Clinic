@@ -1,6 +1,6 @@
 package ru.jamanil.catVetClinicDb.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,19 +19,15 @@ import java.util.Optional;
  */
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class CatService {
     private final CatRepository catRepository;
-
-    @Autowired
-    public CatService(CatRepository catRepository) {
-        this.catRepository = catRepository;
-    }
 
     public List<Cat> findAllByOwner(Client owner) {
         return catRepository.findAllByOwner(owner);
     }
 
-    public Optional<Cat> findById(int id) {
+    public Optional<Cat> findById(long id) {
         return catRepository.findById(id);
     }
 
@@ -48,7 +44,7 @@ public class CatService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
-    public void update(Cat updatedCat, int id) {
+    public void update(Cat updatedCat, long id) {
         Optional<Cat> catOptional = findById(id);
 
         if (catOptional.isPresent()) {
@@ -67,7 +63,7 @@ public class CatService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void delete(int id) {
+    public void delete(long id) {
         catRepository.deleteById(id);
     }
 }

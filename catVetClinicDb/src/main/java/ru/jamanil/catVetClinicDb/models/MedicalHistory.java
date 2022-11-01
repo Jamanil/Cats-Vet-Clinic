@@ -1,13 +1,12 @@
 package ru.jamanil.catVetClinicDb.models;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author Victor Datsenko
@@ -21,7 +20,7 @@ public class MedicalHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @NotNull(message = "Medical history cannot exist without a cat")
     @ManyToOne
@@ -60,18 +59,5 @@ public class MedicalHistory {
     public void setCat(Cat cat) {
         this.cat = cat;
         cat.addMedicalHistoryOrder(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        MedicalHistory that = (MedicalHistory) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
     }
 }
